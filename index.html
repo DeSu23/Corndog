@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>🙏Respect to Corndog!🙏</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        /* CSS styles */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            text-align: center;
+        }
+
+        #background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(#010916, #110d38);
+        }
+
+        #flyingCorndog {
+            animation: fly 2s infinite alternate ease-in-out;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15%;
+            height: auto;
+        }
+
+        @keyframes fly {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) rotate(-3deg);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translate(-50%, -50%) rotate(3deg);
+            }
+
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translate(-50%, -50%) rotate(-3deg);
+            }
+        }
+
+        #stars {
+            position: absolute;
+            width: 100%;
+            height: 200%;
+            top: -100%;
+        }
+
+        .star {
+            background-image: url('stars.png');
+            background-repeat: repeat-y;
+            background-size: 100% auto;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+        }
+
+        #messageBox {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        #timer,
+        #nowPlaying {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .shootingStar {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            animation: shootingAnimation 2s linear forwards;
+        }
+
+        @keyframes shootingAnimation {
+            0% {
+                top: -50px;
+                left: calc(100% * var(--rand));
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                left: calc(100% * var(--rand) - 300px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="background">
+        <div id="stars">
+            <div class="star" id="star1"></div>
+            <div class="star" id="star2"></div>
+        </div>
+        <img src="flying_corndog.png" alt="Flying Corndog" id="flyingCorndog">
+        <div id="messageBox">
+            <div>Pay Respect to Corndog 🙏</div>
+            <div id="timer">You've been paying respect for <span id="timeElapsed">0</span> seconds.</div>
+            <div id="nowPlaying"></div>
+        </div>
+        <audio id="musicPlayer"></audio>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var stars = document.getElementById('stars');
+            var speed = 2;
+            var y = 0;
+
+            function animateStars() {
+                y += speed;
+                stars.style.top = (y - 100) + '%';
+
+                if (y >= 100) {
+                    y = 0;
+                }
+
+                requestAnimationFrame(animateStars);
+            }
+
+            animateStars();
+
+            var startTime = Date.now();
+            var timeElapsedDisplay = document.getElementById('timeElapsed');
+            var nowPlayingDisplay = document.getElementById('nowPlaying');
+            var musicPlayer = document.getElementById('musicPlayer');
+
+            function updateTimer() {
+                var now = Date.now();
+                var timeElapsed = now - startTime;
+                var seconds = Math.floor(timeElapsed / 1000);
+                var milliseconds = timeElapsed % 1000;
+                timeElapsedDisplay.textContent = seconds + '.' + milliseconds.toString().padStart(3, '0') + ' seconds';
+                requestAnimationFrame(updateTimer);
+            }
+
+            updateTimer();
+
+            var musicTracks = [
+                { file: 'Music1.mp3', title: 'Queen - Don\'t Stop Me Now' },
+                { file: 'Music2.mp3', title: 'Fall Out Boy - The Last Of The Real Ones' },
+                { file: 'Music3.mp3', title: 'Fall Out Boy - Sugar, We\'re Goin Down' }
+            ];
+            var currentTrackIndex = -1;
+
+            function playNextTrack() {
+                currentTrackIndex = (currentTrackIndex + 1) % musicTracks.length;
+                musicPlayer.src = musicTracks[currentTrackIndex].file;
+                nowPlayingDisplay.textContent = 'Now Playing: ' + musicTracks[currentTrackIndex].title;
+                musicPlayer.play();
+            }
+
+            musicPlayer.addEventListener('ended', playNextTrack);
+            playNextTrack(); // Start playing music
+
+            function createShootingStar() {
+                var shootingStar = document.createElement('img');
+                shootingStar.src = Math.random() < 0.5 ? 'omegle.png' : 'cute_boy.png';
+                shootingStar.classList.add('shootingStar');
+                shootingStar.style.setProperty('--rand', Math.random());
+                document.body.appendChild(shootingStar);
+
+                setTimeout(() => {
+                    shootingStar.remove();
+                }, 2000);
+            }
+
+            setInterval(createShootingStar, Math.random() * 2000 + 500);
+        });
+    </script>
+</body>
+
+</html>
